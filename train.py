@@ -20,8 +20,17 @@ from model import *
 from utils import *
 
 #Print out the number of nodes and edges in the newly constructed graph
+
+
+G = build_karate_club_graph()
+
+#UNCOMMENT TO USE YOUR OWN GRAPH
+"""
 hello = edge_list()
 G = hello.dgl_graph_from_cypher(hello.get_edge_list())
+
+"""
+
 nx_G = G.to_networkx().to_undirected()
 print('We have %d nodes.'% G.number_of_nodes())
 print('We have %d edges.'% G.number_of_edges())
@@ -30,7 +39,7 @@ print('We have %d edges.'% G.number_of_edges())
 pos = nx.kamada_kawai_layout(nx_G)
 
 #nx.draw(nx_G, pos, with_labels=True, node_color=[[.7, .7, .7]])
-plt.savefig('graph_vis/graph.png')
+#plt.savefig('graph_vis/graph.png')
 
 #train the model
 
@@ -103,4 +112,4 @@ plt.savefig("graph_vis/Final_Iteration.png")
 print("Visualizations saved to", "/graph_vis")
 
 #close the graph database (might be an error)
-hello.close()
+#hello.close()

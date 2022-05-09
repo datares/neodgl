@@ -25,6 +25,14 @@ To use your own database, edit <code> \_\_init__ </code> in <code> neodgl.py </c
  <code> self.driver = GraphDatabase.driver("YOUR OWN URI", auth=("neo4j", "PASSWORD"))
 </code>
 
+and uncomment lines 29 and 30:
+
+<code> hello = edge_list() </code>
+
+<code> G = hello.dgl_graph_from_cypher(hello.get_edge_list()) </code>
+
+
+
 ### Visualizations
 ---------------
 Semi-Supervised Node Classification Model Training: 
