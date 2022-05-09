@@ -88,4 +88,4 @@ if __name__ == "__main__":
     nx_G = G.to_networkx().to_undirected()
     pos = nx.kamada_kawai_layout(nx_G)
     nx.draw(nx_G, pos, with_labels=True, node_color=[[.7, .7, .7]])
-    plt.savefig('graph.png')
+    plt.savefig('graph_vis/karate.png')

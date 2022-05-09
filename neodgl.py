@@ -1,62 +1,54 @@
+import neo4j
 from neo4j import GraphDatabase
-from neo4j.types.graph import Node, Relationship
+from neo4j.graph import Node, Relationship
 import pandas as pd
-import networkx as nx
+import dgl
+import matplotlib.pyplot as plt
+import numpy as np
 
-def graph_from_cypher(data):
-    """Constructs a networkx graph from the results of a neo4j cypher query.
-    Example of use:
-    >>> result = session.run(query)
-    >>> G = graph_from_cypher(result.data())
 
-    Nodes have fields 'labels' (frozenset) and 'properties' (dicts). Node IDs correspond to the neo4j graph.
-    Edges have fields 'type_' (string) denoting the type of relation, and 'properties' (dict)."""
+class edge_list():
+    """Class to run LinkPred"""
+    def __init__(self) -> None:
+        self.driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "quickstart"))
 
-    G = nx.Graph()
-    def add_node(node):
-        # Adds node id it hasn't already been added
-        u = node.id
-        if G.has_node(u):
-            return
-        G.add_node(u, labels=node._labels, properties=dict(node))
+    def close(self) -> None:
+        self.driver.close()
 
-    def add_edge(relation):
-        # Adds edge if it hasn't already been added.
-        # Make sure the nodes at both ends are created
-        for node in (relation.start_node, relation.end_node):
-            add_node(node)
-        # Check if edge already exists
-        u = relation.start_node.id
-        v = relation.end_node.id
-        eid = relation.id
-        if G.has_edge(u, v, key=eid):
-            return
-        # If not, create it
-        G.add_edge(u, v, key=eid, type_=relation.type, properties=dict(relation))
+    @classmethod
+    def edge_list(cls, tx) -> any:
+        query = ("""
+                    MATCH path=(m)--(n)
+                    RETURN m.id AS u, n.id AS v
+                """)
+        result = tx.run(query)
+        #return a dataframe
+        return result.data() 
 
-    for d in data:
-        for entry in d.values():
-            # Parse node
-            if isinstance(entry, Node):
-                add_node(entry)
+    def get_edge_list(self) -> any:
+        result = self.driver.session().write_transaction(self.edge_list)
+        return pd.DataFrame(result)
 
-            # Parse link
-            elif isinstance(entry, Relationship):
-                add_edge(entry)
-            else:
-                raise TypeError("Unrecognized object")
-    return G
+    def dgl_graph_from_cypher(self, data: pd.DataFrame) -> None:
+        """
+        Takes the whole graph and creates dgl graph
 
-driver = GraphDatabase.driver('bolt://localhost:7687', auth=("neo4j", "hunter2"))
+        ARGS:
+            data is the edge list in a pandas df
+            
+        RETURNS: dgl graph
+        """
+        u = data["u"].to_numpy()
+        v = data["v"].to_numpy()
+        #Building diagram
+        return dgl.DGLGraph((u, v))
 
-query = """
-MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
-WHERE toLower(m.title) CONTAINS "you"
-RETURN *
-"""
 
-with driver.session() as session:
-    result = session.run(query)
 
-# This works
-G = graph_from_cypher(result.data())
+
+
+if __name__ == "__main__":
+    hello = edge_list()
+    data = hello.dgl_graph_from_cypher(hello.get_edge_list())
+    print('We have %d nodes.'% data.number_of_nodes())
+    print('We have %d edges.'% data.number_of_edges())

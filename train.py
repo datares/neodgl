@@ -16,18 +16,22 @@ sns.set(font_scale = 1.5)
 sns.set_theme()
 
 
+
+
+from neodgl import edge_list 
 from model import *
 from utils import *
 
 #Print out the number of nodes and edges in the newly constructed graph
-G = build_karate_club_graph()
+hello = edge_list()
+G = hello.dgl_graph_from_cypher(hello.get_edge_list())
+nx_G = G.to_networkx().to_undirected()
 print('We have %d nodes.'% G.number_of_nodes())
 print('We have %d edges.'% G.number_of_edges())
-#Visualize the graph by converting it into a networkx graph
-nx_G = G.to_networkx().to_undirected()
+
 pos = nx.kamada_kawai_layout(nx_G)
 #nx.draw(nx_G, pos, with_labels=True, node_color=[[.7, .7, .7]])
-#plt.savefig('graph.png')
+plt.savefig('graph_vis/graph.png')
 
 ################################
 #train the model
@@ -90,3 +94,5 @@ plt.savefig("graph_vis/Initial_Embedding.png")
 draw(199, all_logits, nodelist, nx_G, ax)
 plt.savefig("graph_vis/Final_Iteration.png")
 print("Visualizations saved to", "/graph_vis")
+
+hello.close()
