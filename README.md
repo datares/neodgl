@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/datares/neodgl) ![GitHub last commit](https://img.shields.io/github/last-commit/datares/neodgl)
+![GitHub](https://img.shields.io/github/license/datares/neodgl) ![GitHub last commit](https://img.shields.io/github/last-commit/datares/neodgl) ![Own Badge](https://img.shields.io/badge/Research%20Head-Irsyad%20%3A\)\)\)-blue) ![Own Badge](https://img.shields.io/badge/dependencies-7-brightgreen)
 
 # Seemless integration of DGL on Neo4j DBMS
 ---------------
@@ -24,5 +24,13 @@ To use your own database, edit <code> \_\_init__ </code> in <code> neodgl.py </c
 
  <code> self.driver = GraphDatabase.driver("YOUR OWN URI", auth=("neo4j", "PASSWORD"))
 </code>
+
+### Visualizations
+---------------
+Semi-Supervised Node Classification Model Training: 
+![](graph_vis/graph.gif)
+
+
+
 
 ### NOTE: UNFINISHED REPOS
