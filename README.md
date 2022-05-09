@@ -21,23 +21,28 @@ Switch to conda env and install dependencies:
 
 <code> pip install -r requirements.txt </code>
 
-Start Training:
+Start Training with Zach's Karate Club Test Data:
 
-<code> python3 train.py </code>
-
-
-To use your own database, edit <code> \_\_init__ </code> in <code> neodgl.py </code>:
-
- <code> self.driver = GraphDatabase.driver("YOUR OWN URI", auth=("neo4j", "PASSWORD"))
-</code>
-
-and uncomment lines 29 and 30:
-
-<code> hello = edge_list() </code>
-
-<code> G = hello.dgl_graph_from_cypher(hello.get_edge_list()) </code>
+<code> python3 train.py --test</code>
 
 
+To use your own database:
+
+ <code> python3 train.py --uri [DBMS URI] --password [DBMS PASSWORD]</code>
+
+Arguments: 
+
+```
+usage: train.py [-h] [--test] [--uri URI] [--password PASSWORD]
+
+Train the GCN model using either the test data or neo4j dbms
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --test               train the test data!
+  --uri URI            neo4j dbms uri
+  --password PASSWORD  neo4j dbms password
+```
 
 ### Visualizations
 ---------------

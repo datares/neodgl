@@ -27,7 +27,7 @@ def build_karate_club_graph():
     u = np.concatenate([src, dst])
     v = np.concatenate([dst, src])
     #Building diagram
-    return dgl.DGLGraph((u, v))
+    return dgl.graph((u, v))
 
 
 

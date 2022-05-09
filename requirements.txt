@@ -5,3 +5,8 @@ sklearn
 matplotlib
 seaborn
 neo4j
+argparse
+itertools
+os
+pandas
+numpy

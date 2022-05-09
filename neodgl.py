@@ -9,8 +9,8 @@ import numpy as np
 
 class edge_list():
     """Class to gather the edge list and create dgl graph"""
-    def __init__(self) -> None:
-        self.driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "quickstart"))
+    def __init__(self, uri: str, password: str) -> None:
+        self.driver = GraphDatabase.driver(uri, auth=("neo4j", password))
 
     def close(self) -> None:
         self.driver.close()
@@ -42,7 +42,7 @@ class edge_list():
         u = data["u"].to_numpy()
         v = data["v"].to_numpy()
         #Building diagram
-        return dgl.DGLGraph((u, v))
+        return dgl.graph((u, v))
 
 
 
