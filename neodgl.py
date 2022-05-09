@@ -8,7 +8,7 @@ import numpy as np
 
 
 class edge_list():
-    """Class to run LinkPred"""
+    """Class to gather the edge list and create dgl graph"""
     def __init__(self) -> None:
         self.driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "quickstart"))
 
@@ -38,12 +38,11 @@ class edge_list():
             
         RETURNS: dgl graph
         """
+        #THIS IS UNDIRECTED GRAPH
         u = data["u"].to_numpy()
         v = data["v"].to_numpy()
         #Building diagram
         return dgl.DGLGraph((u, v))
-
-
 
 
 
