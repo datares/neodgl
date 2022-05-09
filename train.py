@@ -99,7 +99,7 @@ if not os.path.exists("graph_vis"):
 
 #save into a video
 ani = animation.FuncAnimation(fig, draw, fargs = (all_logits, nodelist, nx_G, ax), frames=len(all_logits), interval=200)
-vid_name = "graph_vis/graph.mp4"
+vid_name = "graph_vis/graph.gif"
 ani.save(vid_name, writer = "Pillow", fps = 80)
 print("Saved Video:", vid_name)
 
