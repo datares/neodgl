@@ -9,9 +9,15 @@ Overall, this repository not only solves both Neo4j and DGL's shortcomings, but 
 
 ### Setup
 -------
-Create Conda Env and install dependencies:
+Create new conda env:
+
+<code> conda create -n dgl </code>
+
+Switch to conda env and install dependencies:
 
 <code> conda activate dgl </code>
+
+<code> git clone git@github.com:datares/neodgl.git</code>
 
 <code> pip install -r requirements.txt </code>
 
