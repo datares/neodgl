@@ -1,0 +1,8 @@
+tensorflow
+torch
+dgl
+sklearn
+umap
+matplotlib
+seaborn
+neo4j
