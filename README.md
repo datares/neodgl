@@ -7,7 +7,7 @@ By integrating the DGL framework with the Neo4j DBMS, analysis of network data i
 
 Overall, this repository not only solves both Neo4j and DGL's shortcomings, but also provides visualizations of model training for enhanced understanding of GCN/GNNs. 
 
-<br>
+#
 
 **Project Goals:**
 
@@ -21,7 +21,7 @@ The Research Team studies deep learning applications, the Athletics team uses da
 
 More Info: *https://ucladatares.com*
 
-<br>
+#
 
 **Requirements**:
 
@@ -32,7 +32,7 @@ After downloading Neo4j, the DBMSS should contain both APOC and GDSL. It is only
 
 
 
-#
+---------------
 ### Deploy DataRes Network in Neo4j
 
 The code to deploy this graph is in the folder [/graph_create/](/graph_create/)
@@ -42,7 +42,7 @@ The code to deploy this graph is in the folder [/graph_create/](/graph_create/)
 cd graph_create
 python3 graph_create.py --uri [URI] --password [PASSWORD]
 ```
-#
+-------------
 ### Create Conda Environment
 
 It is best practice to create a new conda environment to run this repos.
@@ -53,7 +53,7 @@ It is best practice to create a new conda environment to run this repos.
  git clone git@github.com:datares/neodgl.git
  pip install -r requirements.txt
  ```
-#
+--------
 ### Training 
 Start Training with Zach's Karate Club Test Data:
 
@@ -77,7 +77,7 @@ optional arguments:
   --uri URI            neo4j dbms uri
   --password PASSWORD  neo4j dbms password
 ```
-#
+------------------
 ### Visualizations
 
 Semi-Supervised Node Classification Model Training: 
