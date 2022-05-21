@@ -52,12 +52,21 @@ optional arguments:
   --uri URI            neo4j dbms uri
   --password PASSWORD  neo4j dbms password
 ```
-
-### Visualizations
 ---------------
+### Visualizations
+
 Semi-Supervised Node Classification Model Training: 
 ![](graph_vis/graph.gif)
 
 
 
-### NOTE: UNFINISHED REPOS
+--------
+### To Dos:
+
+Model Efficiency:
+  -Implement Early Stopping
+  -Implement Batch Normalization???
+
+Analysis:
+  - hierarchical clustering
+  - f1 score and confusion matrix
