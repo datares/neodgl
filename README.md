@@ -7,8 +7,34 @@ By integrating the DGL framework with the Neo4j DBMS, analysis of network data i
 
 Overall, this repository not only solves both Neo4j and DGL's shortcomings, but also provides visualizations of model training for enhanced understanding of GCN/GNNs. 
 
------------
+<br>
+
+**Project Goals:**
+
+This repository was created with the goal in mind of integrating both DGL and neo4j to provide a complete "stack" of network analysis tools, and then use these tools for analysis of social networks.
+
+**DataRes Network:**
+
+The social network that is used is DataRes @ UCLA, a student organization consisting of data science teams with a variety of goals. 
+
+The Research Team studies deep learning applications, the Athletics team uses data science and statistics to aid UCLA Athletics, the Consulting team helps private organizations pro-bono, and the Data Blog team analyzes interesting topics in society!
+
+More Info: *https://ucladatares.com*
+
+<br>
+
+**Requirements**:
+
+This repository is intended to be used in conjunction with Neo4j, a graph application found [here](https://neo4j.com/).
+
+After downloading Neo4j, the DBMSS should contain both APOC and GDSL. It is only then will this repository run cleanly.
+
+
+
+
+#
 ### Deploy DataRes Network in Neo4j
+
 The code to deploy this graph is in the folder [/graph_create/](/graph_create/)
 
 ![](graph_vis/neo4j_bloom_datares.PNG)
@@ -16,7 +42,7 @@ The code to deploy this graph is in the folder [/graph_create/](/graph_create/)
 cd graph_create
 python3 graph_create.py --uri [URI] --password [PASSWORD]
 ```
-----------
+#
 ### Create Conda Environment
 
 It is best practice to create a new conda environment to run this repos.
@@ -27,8 +53,7 @@ It is best practice to create a new conda environment to run this repos.
  git clone git@github.com:datares/neodgl.git
  pip install -r requirements.txt
  ```
-
--------------------
+#
 ### Training 
 Start Training with Zach's Karate Club Test Data:
 
@@ -52,7 +77,7 @@ optional arguments:
   --uri URI            neo4j dbms uri
   --password PASSWORD  neo4j dbms password
 ```
----------------
+#
 ### Visualizations
 
 Semi-Supervised Node Classification Model Training: 
@@ -64,8 +89,8 @@ Semi-Supervised Node Classification Model Training:
 ### To Dos:
 
 Model Efficiency:
-  -Implement Early Stopping
-  -Implement Batch Normalization???
+  - Implement Early Stopping
+  - Implement Batch Normalization???
 
 Analysis:
   - hierarchical clustering
