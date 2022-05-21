@@ -2,25 +2,34 @@
 
 
 
-# Seemless integration of DGL on Neo4j DBMS
+# Seamless integration of DGL on Neo4j DBMS
 By integrating the DGL framework with the Neo4j DBMS, analysis of network data is more wholistic, combining the visualization prowess and "classical" graph algorithms of Neo4j and the end-to-end deep learning models of DGL. 
 
 Overall, this repository not only solves both Neo4j and DGL's shortcomings, but also provides visualizations of model training for enhanced understanding of GCN/GNNs. 
 
-### Setup
--------
-Create new conda env:
+-----------
+### Deploy DataRes Network in Neo4j
+The code to deploy this graph is in the folder [/graph_create/](/graph_create/)
 
-<code> conda create -n dgl </code>
+![](graph_vis/neo4j_bloom_datares.PNG)
+```
+cd graph_create
+python3 graph_create.py --uri [URI] --password [PASSWORD]
+```
+----------
+### Create Conda Environment
 
-Switch to conda env and install dependencies:
+It is best practice to create a new conda environment to run this repos.
 
-<code> conda activate dgl </code>
+```
+ conda create -n dgl 
+ conda activate dgl 
+ git clone git@github.com:datares/neodgl.git
+ pip install -r requirements.txt
+ ```
 
-<code> git clone git@github.com:datares/neodgl.git</code>
-
-<code> pip install -r requirements.txt </code>
-
+-------------------
+### Training 
 Start Training with Zach's Karate Club Test Data:
 
 <code> python3 train.py --test</code>
@@ -48,7 +57,6 @@ optional arguments:
 ---------------
 Semi-Supervised Node Classification Model Training: 
 ![](graph_vis/graph.gif)
-
 
 
 
