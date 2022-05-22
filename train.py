@@ -1,3 +1,4 @@
+from warnings import filterwarnings
 import dgl
 import numpy as np
 import networkx as nx
@@ -21,6 +22,8 @@ from neodgl import edge_list
 from model import *
 from utils import *
 
+import warnings
+warnings.filterwarnings('ignore')
 
 if __name__ == "__main__":
 
@@ -43,50 +46,57 @@ if __name__ == "__main__":
         time.sleep(2)
 
     elif args.uri and args.password:
-        print("\nConnecting to", args.uri)
+        print("\nconnecting to", args.uri)
         hello = edge_list(args.uri, args.password)
         G = hello.dgl_graph_from_cypher(hello.get_edge_list())
-        print("Connection Success\n")
+        hello.close()
+        print("connection success\n")
         time.sleep(2)
 
+    #TODO: ADD ARGsS
+
+    #how many labels there are
+    num_labels = 3
+
+    #note that only the nodes with the id of 0 and 33 (the president and the instructor) are labeled
+    #for labeling, make sure that the node ids (or names, etc.) are unique
+    prelabeled_nodes = [0, 33, 56]
+
+    #here, we are giving the label 0 to the node 0 and 1 to the node 33
+    #for 4 groups, it would look like [0, 1, 2, 3], where each one is the class
+    classes = [0, 1, 2]
+
+    #MATCH COLORS TO NUMBER OF CLASSES, COLORS CAN BE ANYTHIN (HTMNL COLORS) BUT DIMENSTION MATCH
+    #ex) number of labels = 3 -> number of colors = 3
+    colors = ["#BE6D5C", "#3EFF00", "#1D43F0"]
 
     nx_G = G.to_networkx().to_undirected()
-    print('We have %d nodes.'% G.number_of_nodes())
-    print('We have %d edges.\n'% G.number_of_edges())
+    print("network data:")
+    print('   %d nodes.'% G.number_of_nodes())
+    print('   %d edges.\n'% G.number_of_edges())
 
     #create embeddings using kamada kawaii
     pos = nx.kamada_kawai_layout(nx_G)
 
-    #nx.draw(nx_G, pos, with_labels=True, node_color=[[.7, .7, .7]])
-    #plt.savefig('graph_vis/graph.png')
-
     #train the model
 
-    embed = nn.Embedding(34, 5) # 34 nodes with embedding dim equal to 5
+    embed = nn.Embedding(nx_G.number_of_nodes(), 5) # 34 nodes with embedding dim equal to 5
     G.ndata['feat'] = embed.weight
-    print(G.ndata['feat'][2])
-    print(G.ndata['feat'][[10, 11]])
 
     #create the model
-    net = GCN(5, 5, 2)
-    print('net:', net)
+    net = GCN(5, 5, num_labels)
+    print('gcn:', net)
 
     inputs = embed.weight
-
-    #note that only the nodes with the id of 0 and 33 (the president and the instructor) are labeled
-    #for labeling, make sure that the node ids (or names, etc.) are unique
-    labeled_nodes = torch.tensor([0, 33])
-
-    #here, we are giving the label 0 to the node 0 and 1 to the node 33
-    #for 4 groups, it would look like [0, 1, 2, 3], where each one is the class
-    labels = torch.tensor([0, 1])  
+    labeled_nodes = torch.tensor(prelabeled_nodes)
+    labels = torch.tensor(classes)  
 
     optimizer = torch.optim.Adam(itertools.chain(net.parameters(), embed.parameters()), lr=0.01)
 
     #save the embeddings and output tensor in list
     all_logits = []
 
-    print("\nTraining Starting")
+    print("\nmodel training")
     time.sleep(2)
     #start the training
     for epoch in range(200):
@@ -104,34 +114,36 @@ if __name__ == "__main__":
         optimizer.step()
         print('Epoch %d | Loss: %.4f'% (epoch, loss.item()))
 
-
-
+    print("success")
     #Visualize
 
     fig = plt.figure(dpi=150, figsize=(16,10))
     fig.clf()
     ax = fig.subplots()
 
-    #prelabeled nodes
-    nodelist = [0, 33]
-
     if not os.path.exists("graph_vis"):
         os.mkdir("graph_vis")
 
     #save into a video
-    print("Writing Visualizations")
-    ani = animation.FuncAnimation(fig, draw, fargs = (all_logits, nodelist, nx_G, ax), frames=len(all_logits), interval=200)
+    print("\nwriting visualizations ...")
+
+
+    if len(colors) > 2:
+        print("number of labels is greater than 2, applying dimension reduction")
+    print("colors for each label:", colors)
+
+    ani = animation.FuncAnimation(fig, draw, fargs = (all_logits, prelabeled_nodes, nx_G, ax, colors), frames=len(all_logits), interval=200)
     vid_name = "graph_vis/graph.gif"
     ani.save(vid_name, writer = "Pillow", fps = 80)
-    print("Saved Video:", vid_name)
+    print("saved video:", vid_name)
 
     #draw the graphs
-    draw(0, all_logits, nodelist, nx_G, ax)
+    draw(0, all_logits, prelabeled_nodes, nx_G, ax, colors)
     plt.savefig("graph_vis/Initial_Embedding.png")
 
-    draw(199, all_logits, nodelist, nx_G, ax)
+    draw(199, all_logits, prelabeled_nodes, nx_G, ax, colors)
     plt.savefig("graph_vis/Final_Iteration.png")
-    print("Visualizations saved to", "/graph_vis")
+    print("visualizations saved to", "/graph_vis")
 
-    #close the graph database (might be an error)
-    #hello.close()
+
+
