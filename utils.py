@@ -3,12 +3,17 @@ import numpy as np
 import networkx as nx
 import torch
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-sns.set(font_scale = 1.5)
-sns.set_theme()
 from sklearn.decomposition import PCA
 from tqdm import tqdm
+import pandas as pd
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set(font_scale = 1.5)
+sns.set_theme()
+
+
 
 
 def build_karate_club_graph():
@@ -70,8 +75,6 @@ def draw(iteration: int, all_logits: torch.tensor, nodelist: [int], nx_G, ax, co
             cls = all_logits[iteration][j].numpy().argmax()
             colors.append(coloring[cls])
 
-
-
     #clear from previous graph
     ax.cla()
 
@@ -91,19 +94,110 @@ def draw(iteration: int, all_logits: torch.tensor, nodelist: [int], nx_G, ax, co
     #ax.legend()
 
 
-    def hierarchical_clustering(iteration: int, all_logits: np.array) -> None:
-        """ 
-        ARGS:
-            iterations: an int that specifies which iteration you want to cluster
-            all_logits: numpy array(output tensor) that holds all embeddings from the model
 
-        RETURNS:
-            None!
-            But draws a hierarchical_clustering plot
-        """
-        node_embeddings = all_logits[iteration]
-        pass
+def write_confusion_matrix(iteration: int, all_logits: torch.tensor, nx_G, true_labels: pd.DataFrame, classes: dict, ax, cbar_ax):
+    pred_classes = []
+    true_labels = true_labels["team"].tolist()
+
+    #find class length for division of confusion matrix into percentage
+    class_len = []
+    for i in range(len(classes)):
+        class_len.append(true_labels.count(classes[i]))
+
+    #get what model thinks of classes
+    #UNSURE IF THESE ARE IN ORDER etc. [node0: embed0, node1: embed1 ...] etc need to check
+    for j in range(nx_G.number_of_nodes()):
+        cls = all_logits[iteration][j].numpy().argmax()
+        pred_classes.append(classes[cls])
         
+    #pred classes = [predictions from the model]
+    #true classes = [neo4j labels]
+    #classes = {0: neo4j label, 1: neo4j label, 2: neo4j label...}
+
+
+    confusion_matrix = {}
+
+    #create confusion matrix
+    """
+    final confusion matrix        
+                                predicted
+                                A| B | C
+                        true  x|
+                              y|
+                              z|
+    
+    currernt confusion matrix {A: [x, y, z], B: [x, y, z], C: [x, y, z]}
+    """
+
+    #iterate through the dict keys
+    for i in range(len(classes)):
+        
+        #for confusion matrix dictionary
+        column_list = []
+
+        #predicted class
+        #ex) for i = 1, this would be A = "UCLA ATHLETICS"
+        label1 = classes[i]
+
+        #iterate through the list of each dict key
+        for j in range(len(classes)):
+
+            #count occurrences of label 1 x label 1
+            count = 0
+
+            #for i = 1, this would be x = 'UCLA ATHLETICS"
+            label2 = classes[j]
+
+            #iterate through both at once
+            for x, y in zip(true_labels, pred_classes):
+                #label 1 is the predicted, label2 is the real
+                if y == label1 and x == label2:
+                    count += 1
+
+            #finished counting, now append        
+            column_list.append(count)   
+
+        #after calculation, append to matrix
+        confusion_matrix[classes[i]] = column_list
+
+
+    confusion_matrix["class_len"] = class_len
+    confusion_df = pd.DataFrame(confusion_matrix)
+
+    #percentage
+    confusion_df = confusion_df[confusion_df.columns[:-1]].div(confusion_df.class_len, axis=0)
+    confusion_df.index = confusion_df.columns.to_list()
+
+    ax.cla()
+
+    #plot
+    sns.heatmap(data = confusion_df, alpha=0.9, cmap = "magma", yticklabels = confusion_df.index, xticklabels = confusion_df.columns, annot = True, ax = ax, cbar = True, cbar_ax = cbar_ax, vmin = 0, vmax = 1)
+    #edit the plot
+
+    ax.set_title('Confusion Matrix for Epoch: %d'% iteration, fontdict = {"fontsize": 15})
+    ax.tick_params(axis='x', labelsize=10)
+    ax.tick_params(axis='y', labelsize=10)
+    ax.set_xlabel("Predicted Labels", fontdict={'fontsize':12})
+    ax.set_ylabel("True Labels", fontdict={'fontsize':12})
+
+ 
+
+
+    
+
+def hierarchical_clustering(iteration: int, all_logits: np.array) -> None:
+    """ 
+    ARGS:
+        iterations: an int that specifies which iteration you want to cluster
+        all_logits: numpy array(output tensor) that holds all embeddings from the model
+
+    RETURNS:
+        None!
+        But draws a hierarchical_clustering plot
+    """
+    node_embeddings = all_logits[iteration]
+    pass
+    
 
 
 

@@ -19,7 +19,7 @@ class edge_list():
     def edge_list(cls, tx) -> any:
         query = ("""
                     MATCH path=(m)--(n)
-                    RETURN m.id AS u, n.id AS v
+                    RETURN ID(m) AS u, ID(n) AS v
                 """)
         result = tx.run(query)
         #return a dataframe
@@ -43,6 +43,20 @@ class edge_list():
         v = data["v"].to_numpy()
         #Building diagram
         return dgl.graph((u, v))
+
+    def true_labels(cls, tx):
+        query = ("""
+                    MATCH (n)
+                    RETURN ID(n) as id, n.team as team
+        """)
+        result = tx.run(query)
+        #return a dataframe
+        return result.data() 
+    
+    def get_true_labels(self) -> any:
+        result = self.driver.session().write_transaction(self.true_labels)
+        return pd.DataFrame(result)
+
 
 
 
