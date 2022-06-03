@@ -65,3 +65,4 @@ if __name__ == "__main__":
     data = hello.dgl_graph_from_cypher(hello.get_edge_list())
     print('We have %d nodes.'% data.number_of_nodes())
     print('We have %d edges.'% data.number_of_edges())
+

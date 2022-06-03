@@ -1,15 +1,18 @@
-from warnings import filterwarnings
 import dgl
 import numpy as np
 import networkx as nx
-from sklearn.metrics import confusion_matrix
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from dgl.nn.pytorch import GraphConv
+
+from sklearn.metrics import confusion_matrix
+
 import itertools
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+
 import os
 import shutil
 import argparse
@@ -93,7 +96,7 @@ if __name__ == "__main__":
     print("prelabeled nodes:", prelabeled_nodes)
 
     #create embeddings using kamada kawaii
-    pos = nx.kamada_kawai_layout(nx_G)
+    #pos = nx.kamada_kawai_layout(nx_G)
 
     #train the model
 

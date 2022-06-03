@@ -83,15 +83,9 @@ optional arguments:
 Semi-Supervised Node Classification Model Training: 
 ![](graph_vis/graph.gif)
 
+Confusion Matrix:
+![](accuracy_vis/confusion_matrix.gif)
 
 
 --------
-### To Dos:
 
-Model Efficiency:
-  - Implement Early Stopping
-  - Implement Batch Normalization???
-
-Analysis:
-  - hierarchical clustering
-  - f1 score and confusion matrix

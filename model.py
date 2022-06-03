@@ -11,8 +11,8 @@ class GCN(nn.Module):
 
     def __init__(self, in_feats, hidden_size, num_classes):
         super(GCN, self).__init__()
-        self.conv1 = GraphConv(in_feats, hidden_size)
-        self.conv2 = GraphConv(hidden_size, num_classes)
+        self.conv1 = GraphConv(in_feats, hidden_size, include_zero_in_degree = True)
+        self.conv2 = GraphConv(hidden_size, num_classes, include_zero_in_degree = True)
 
     def forward(self, g, inputs):
         h = self.conv1(g, inputs)
