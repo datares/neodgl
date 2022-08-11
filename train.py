@@ -5,6 +5,7 @@ import networkx as nx
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn.parameter as param
 from dgl.nn.pytorch import GraphConv
 
 from sklearn.metrics import confusion_matrix
@@ -25,6 +26,7 @@ sns.set_theme()
 from neodgl import edge_list 
 from model import *
 from utils import *
+from nx_node2vec import *
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -61,6 +63,7 @@ if __name__ == "__main__":
     parser.add_argument("--test", default=False, action="store_true", help = "train the test data!")
     parser.add_argument("--uri", type=str, help="neo4j dbms uri", default="")
     parser.add_argument("--password", type=str, help="neo4j dbms password", default="")
+    parser.add_argument("--embed", type=str, help="types of embeddings, either 'node2vec' or 'torch_embeddings'", default="node2vec")
     args = parser.parse_args()
 
 
@@ -88,6 +91,21 @@ if __name__ == "__main__":
         print("connection success\n")
         time.sleep(2)
 
+    if args.embed == "node2vec":
+        #implement NODE2VEC
+        print("\nGenerating embeddings using Node2Vec:")
+        nx_node2vec_embed = embed_node2vec(nx_G)
+        nx_node2vec_embed = torch.tensor(nx_node2vec_embed, dtype=torch.float32)
+        nx_node2vec_embed = param.Parameter(nx_node2vec_embed, requires_grad = True)
+
+        #make the embeddings node2vec
+        embed = nn.Embedding(nx_G.number_of_nodes(), 5) # 62 nodes with embedding dim equal to 5
+        embed.weight = nx_node2vec_embed
+        #print(nx_node2vec_embed)
+
+    if args.embed == "torch_embeddings":
+        embed = nn.Embedding(nx_G.number_of_nodes(), 5) # 62 nodes with embedding dim equal to 5
+        
 
     nx_G = G.to_networkx().to_undirected()
     print("network data:")
@@ -95,20 +113,15 @@ if __name__ == "__main__":
     print('   %d edges.'% G.number_of_edges())
     print("prelabeled nodes:", prelabeled_nodes)
 
-    #create embeddings using kamada kawaii
-    #pos = nx.kamada_kawai_layout(nx_G)
 
-    #train the model
-
-    
-    embed = nn.Embedding(nx_G.number_of_nodes(), 5) # 34 nodes with embedding dim equal to 5
     G.ndata['feat'] = embed.weight
 
     #create the model
     net = GCN(5, 5, num_labels)
+    net = net.double()
     print('\ngcn:', net)
 
-    inputs = embed.weight
+    inputs = embed.weight.double()
     labeled_nodes = torch.tensor(prelabeled_nodes)
     labels = torch.tensor(classes)  
 
@@ -121,6 +134,7 @@ if __name__ == "__main__":
     print("model training")
     time.sleep(2)
     #start the training
+
     for epoch in range(200):
 
         logits = net(G, inputs)
